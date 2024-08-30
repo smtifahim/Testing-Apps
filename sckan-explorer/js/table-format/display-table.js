@@ -125,29 +125,28 @@ function createLocationHeaderRow()
 //   });
 // }
 
-function createDataRows(neuronData) 
-{
-  // Create a Set to store unique keys
+// To create unique rows for each population.
+function createDataRows(neuronData) {
   const uniqueData = new Set();
 
   return neuronData
     .filter(datum => {
-      // Create a unique key for each row
-      const key = JSON.stringify({
-        originLabel: datum.origin.Label,
-        originIRI: datum.origin.IRI,
-        originID: datum.origin.ID,
-        destinationLabel: datum.destination.Label || "-",
-        destinationIRI: datum.destination.IRI,
-        destinationID: datum.destination.ID,
-        viaLabel: datum.via ? datum.via.Label : "-",
-        viaIRI: datum.via ? datum.via.IRI : "",
-        viaID: datum.via ? datum.via.ID : ""
-      });
+      // creating a unique key for each row, ensuring all relevant fields are consistently represented
+      const key = [
+        datum.origin.Label || "",
+        datum.origin.IRI || "",
+        datum.origin.ID || "",
+        datum.destination.Label || "-",
+        datum.destination.IRI || "",
+        datum.destination.ID || "",
+        datum.via ? datum.via.Label || "-" : "-",
+        datum.via ? datum.via.IRI || "" : "",
+        datum.via ? datum.via.ID || "" : ""
+      ].join("|"); // joining all parts with a delimiter to form a unique string
 
       // Check if the key is already in the Set
       if (uniqueData.has(key)) {
-        return false; // Duplicate found, filter it out
+        return false; // if duplicate found, filter it out
       } else {
         uniqueData.add(key); // Add the key to the Set
         return true; // Include the row
@@ -165,7 +164,6 @@ function createDataRows(neuronData)
       return dataRow;
     });
 }
-
 
 function createEmptyRow()
 {
